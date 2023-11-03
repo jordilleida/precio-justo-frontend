@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "precio-justo-frontend",
+    "slug": "precio-justo-frontend",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
