@@ -8,7 +8,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    // Datos que esperará el backend
+    // Datos que esperará UserService en el backend
     const loginData = {
       mail: email,
       password: password,
@@ -23,17 +23,21 @@ const LoginScreen = () => {
         body: JSON.stringify(loginData),
       });
 
-      const json = await response.json();
-      if (response.ok) {
-        console.log('Inicio de sesión exitoso:', json);
-        console.log('El token es:', json.token);
+
+      if (response.status === 200) {
+
+        const token = await response.text();
+        console.log('Inicio de sesión exitoso, token recibido:', token);
+        // Aquí podrías hacer algo con el token, como guardarlo para su uso posterior
       } else {
-        console.error('Error en el inicio de sesión:', json);
-        // Manejar errores como credenciales incorrectas, etc.
+        
+        // Si no es 200, asumimos que es un mensaje de error
+        const errorMsg = await response.text();
+        console.error('Error en el inicio de sesión:', errorMsg);
       }
+      
     } catch (error) {
       console.error('Error de red:', error);
-      // Manejar errores de red
     }
   };
 
