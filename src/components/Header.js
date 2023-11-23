@@ -1,10 +1,16 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View } from 'react-native';
+import { Button } from 'react-native-elements';
+import { globalStyles } from '../styles/styles';
 
 const Header = ({ onLoginPress }) => {
     return (
-        <View>
-            <Button title="Login" onPress={onLoginPress} />
+        <View style={globalStyles.header}>
+            <Button 
+                title="Inicio sesion" 
+                onPress={onLoginPress} 
+                buttonStyle={globalStyles.loginButton}
+            />
         </View>
     );
 };

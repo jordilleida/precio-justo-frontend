@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Modal } from 'react-native';
+import { View, Modal, StyleSheet } from 'react-native';
+import { globalStyles } from './src/styles/styles';
 import Header from './src/components/Header';
 import Menu from './src/components/Menu';
 import LoginModal from './src/components/LoginModal';
 import HomeScreen from './src/screens/HomeScreen';
-import RegisterScreen from './src/screens/RegisterScreen'; // Asumiendo que tienes este componente
+import RegisterScreen from './src/screens/RegisterScreen';
 
 const App = () => {
     const [isLoginModalVisible, setLoginModalVisible] = useState(false);
@@ -20,11 +21,13 @@ const App = () => {
   };
     return (
         <View style={{ flex: 1 }}>
-            <Header onLoginPress={() => setLoginModalVisible(true)} />
-             <Menu 
-                onMenuItemSelect={(screen) => setCurrentScreen(screen)} 
-                onPrecioJustoPress={handlePrecioJustoPress} 
-            />
+            <View style={globalStyles.headerMenuContainer}>
+                <Menu 
+                    onMenuItemSelect={(screen) => setCurrentScreen(screen)} 
+                    onPrecioJustoPress={handlePrecioJustoPress} 
+                />
+                <Header onLoginPress={() => setLoginModalVisible(true)} />
+            </View>
 
             {currentScreen === 'Home' && <HomeScreen />}
             {currentScreen === 'Register' && <RegisterScreen />}

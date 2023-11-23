@@ -1,11 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
     return (
-        <View>
+        <View style={styles.menu}>
+
             <TouchableOpacity onPress={() => onMenuItemSelect('item1')}>
-                {/* ...otros elementos del menú... */}
             </TouchableOpacity>
             
             <TouchableOpacity onPress={onPrecioJustoPress}>
@@ -19,6 +18,11 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
 };
 
 const styles = StyleSheet.create({
+    menu: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        padding: 10,
+    },
     boldText: {
         fontWeight: 'bold',
     },

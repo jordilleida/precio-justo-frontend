@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, View, TouchableOpacity, StyleSheet, Text, Pressable } from 'react-native';
+import { Modal, View, TouchableOpacity,Text, Pressable } from 'react-native';
+import { globalStyles } from '../styles/styles';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { login } from '../services/UserService';
@@ -31,9 +32,9 @@ const LoginModal = ({ isVisible, onClose, onRegisterPress }) => {
       transparent={true}
       animationType="slide"
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+      <View style={globalStyles.modalContainer}>
+        <View style={globalStyles.modalContent}>
+          <TouchableOpacity style={globalStyles.closeButton} onPress={onClose}>
             <Icon name="close" size={20} />
           </TouchableOpacity>
           <Input
@@ -49,56 +50,15 @@ const LoginModal = ({ isVisible, onClose, onRegisterPress }) => {
             secureTextEntry
             autoCapitalize="none"
           />
-          {error !== '' && <Text style={styles.errorText}>{error}</Text>}
-          <Button title="Iniciar Sesión" onPress={handleLogin} />
+          {error !== '' && <Text style={globalStyles.errorText}>{error}</Text>}
+          <Button title="Iniciar Sesión" onPress={handleLogin} buttonStyle={globalStyles.loginButton}/>
           <Pressable onPress={onRegisterPress}>
-            <Text style={styles.registerText}>Registrarse</Text>
+            <Text style={globalStyles.registerText}>Registrarse</Text>
           </Pressable>
         </View>
       </View>
     </Modal>
   );
 };
-
-// Estilos
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  modalContent: {
-    width: '80%', 
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    shadowColor: '#000', 
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginVertical: 5,
-  },
-  registerText: {
-    marginTop: 15,
-    color: 'blue',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-  },
-});
 
 export default LoginModal;
