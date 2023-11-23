@@ -1,19 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import LoginScreen from './components/LoginScreen';
+import React, { useState } from 'react';
+import { View, Modal } from 'react-native';
+import Header from './src/components/Header';
+import Menu from './src/components/Menu';
+import LoginModal from './src/components/LoginModal';
+import HomeScreen from './src/screens/HomeScreen';
+import RegisterScreen from './src/screens/RegisterScreen'; // Asumiendo que tienes este componente
 
-export default function App() {
-  return (
-  <LoginScreen />
-  );
-}
+const App = () => {
+    const [isLoginModalVisible, setLoginModalVisible] = useState(false);
+    const [currentScreen, setCurrentScreen] = useState('Home');
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    const handleRegisterPress = () => {
+        setLoginModalVisible(false);
+        setCurrentScreen('Register');
+    };
+
+    const handlePrecioJustoPress = () => {
+      setCurrentScreen('Home');
+  };
+    return (
+        <View style={{ flex: 1 }}>
+            <Header onLoginPress={() => setLoginModalVisible(true)} />
+             <Menu 
+                onMenuItemSelect={(screen) => setCurrentScreen(screen)} 
+                onPrecioJustoPress={handlePrecioJustoPress} 
+            />
+
+            {currentScreen === 'Home' && <HomeScreen />}
+            {currentScreen === 'Register' && <RegisterScreen />}
+
+            <Modal
+                visible={isLoginModalVisible}
+                onRequestClose={() => setLoginModalVisible(false)}
+            >
+                <LoginModal onClose={() => setLoginModalVisible(false)} onRegisterPress={handleRegisterPress} />
+            </Modal>
+        </View>
+    );
+};
+
+export default App;

@@ -15,7 +15,7 @@ const LoginScreen = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:18084/login', {
+      const response = await fetch('http://localhost:8080/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,13 +25,12 @@ const LoginScreen = () => {
 
 
       if (response.status === 200) {
-
+          console.log("--DONE--")
         const token = await response.text();
-        console.log('Inicio de sesión exitoso, token recibido:', token);
-        // Aquí podrías hacer algo con el token, como guardarlo para su uso posterior
+        console.log('Token recibido:', token);
       } else {
         
-        // Si no es 200, asumimos que es un mensaje de error
+        // Si no es 200, asumo que es un mensaje de error
         const errorMsg = await response.text();
         console.error('Error en el inicio de sesión:', errorMsg);
       }
