@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, View, TouchableOpacity,Text, Pressable } from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import { Modal, View, TouchableOpacity,Text, ActivityIndicator, Pressable } from 'react-native';
 import { globalStyles } from '../styles/styles';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,21 +10,27 @@ const LoginModal = ({ isVisible, onClose, onRegisterPress }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { loginAuth } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    try {
-      const response = await login(email, password);
-      if (response.ok) {
-        const token = await response.json();
-        console.log('Token recibido:', token);
-        onClose(); // Cierra el modal después del login
-      } else {
-        setError('Error en el inicio de sesión'); // Manejo del error
-      }
-    } catch (error) {
-      setError('Error en la conexión'); // Error en la petición
-    }
-  };
+        setIsLoading(true);
+        setError('');
+            try {
+                const result = await login(email, password);
+                setIsLoading(false);
+
+                if (result.success) {
+                    loginAuth({ roles: result.roles, name: result.name });
+                    onClose();
+                } else {
+                    setError(result.errorMessage || 'Error en el inicio de sesión');
+                }
+            } catch (error) {
+                setIsLoading(false);
+                setError('Error en la conexión');
+            }
+    };
 
   return (
     <Modal
@@ -51,10 +58,20 @@ const LoginModal = ({ isVisible, onClose, onRegisterPress }) => {
             autoCapitalize="none"
           />
           {error !== '' && <Text style={globalStyles.errorText}>{error}</Text>}
-          <Button title="Iniciar Sesión" onPress={handleLogin} buttonStyle={globalStyles.loginButton}/>
-          <Pressable onPress={onRegisterPress}>
-            <Text style={globalStyles.registerText}>Registrarse</Text>
-          </Pressable>
+            {isLoading ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+            ) : (
+                <Button 
+                    title="Iniciar Sesión" 
+                    onPress={handleLogin} 
+                    buttonStyle={globalStyles.loginButton} 
+                    titleStyle={{ fontSize: 14 }}
+                    disabled={isLoading}
+                />
+            )}
+            <Pressable onPress={onRegisterPress}>
+                <Text style={globalStyles.registerText}>Registrarse</Text>
+            </Pressable>
         </View>
       </View>
     </Modal>

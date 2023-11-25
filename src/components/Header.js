@@ -1,16 +1,38 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { Button } from 'react-native-elements';
+import { useAuth } from '../context/AuthContext';
 import { globalStyles } from '../styles/styles';
 
 const Header = ({ onLoginPress }) => {
+    const { isAuthenticated, user, logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+    };
+
     return (
         <View style={globalStyles.header}>
-            <Button 
-                title="Inicio sesion" 
-                onPress={onLoginPress} 
-                buttonStyle={globalStyles.loginButton}
-            />
+            {isAuthenticated ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={[globalStyles.headerText, { marginRight: 10 }]}>
+                        Hola, {user.name.toUpperCase()}
+                    </Text>
+                    <Button 
+                        title="Logout" 
+                        onPress={handleLogout} 
+                        buttonStyle={globalStyles.loginButton}
+                        titleStyle={{ fontSize: 14 }}
+                    />             
+                </View>
+            ) : (
+                <Button 
+                    title="Inicio sesión" 
+                    onPress={onLoginPress} 
+                    buttonStyle={globalStyles.loginButton}
+                    titleStyle={{ fontSize: 14 }}
+                />
+            )}
         </View>
     );
 };

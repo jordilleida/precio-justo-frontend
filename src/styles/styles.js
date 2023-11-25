@@ -23,6 +23,8 @@ export const globalStyles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         shadowColor: '#000', 
+        alignItems: 'center',
+        justifyContent: 'center',
         shadowOffset: {
           width: 0,
           height: 2,
@@ -32,12 +34,33 @@ export const globalStyles = StyleSheet.create({
         elevation: 5,
       },
       loginButton: {
-        backgroundColor: '#32cd32', 
-        color: 'white'
+        backgroundColor: '#4c9c2e', 
+        color: 'white',
+        maxWidth:120,
       },
       closeButton: {
         alignSelf: 'flex-end',
       },
+      title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20, 
+    },
+    input: {
+        height: 50,
+        width: '90%', 
+        marginVertical: 10, 
+        borderWidth: 1, 
+        borderColor: '#ddd',
+        padding: 15,
+        borderRadius: 5, 
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
       errorText: {
         color: 'red',
         textAlign: 'center',
@@ -52,4 +75,32 @@ export const globalStyles = StyleSheet.create({
       closeButton: {
         alignSelf: 'flex-end',
       },
+      menuItemStyle:{
+        marginLeft:20,
+      },
+      menu: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10,
+    },
+    menuItem: {
+        marginHorizontal: 20,
+    },
+    boldText: {
+        fontWeight: 'bold',
+    },
+    greenText: {
+        color: '#4c9c2e',
+        fontWeight: 'bold',
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        paddingTop: 15, 
+    },
+    text: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
 });
