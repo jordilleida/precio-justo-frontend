@@ -8,16 +8,25 @@ import LoginModal from './src/components/LoginModal';
 import HomeScreen from './src/screens/HomeScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import UserListScreen from './src/screens/UserListScreen';
+import ActiveAuctionsScreen from './src/screens/auctions/ActiveAuctionsScreen';
 
 const App = () => {
     const [isLoginModalVisible, setLoginModalVisible] = useState(false);
     const [currentScreen, setCurrentScreen] = useState('Home');
+
+    const handleLoginModalVisibility = (visible) => {
+        setLoginModalVisible(visible);
+    };
 
     const handleMenuItemSelect = (selectedItem) => {
         switch (selectedItem) {
             case 'UserList':
                 setCurrentScreen('UserList');
                 break;
+            case 'ActiveAuctions':
+                setCurrentScreen('ActiveAuctions');
+                break;
+
         }
     };
 
@@ -44,6 +53,7 @@ const App = () => {
             {currentScreen === 'Home' && <HomeScreen />}
             {currentScreen === 'Register' && <RegisterScreen />}
             {currentScreen === 'UserList' && <UserListScreen />}
+            {currentScreen === 'ActiveAuctions' && <ActiveAuctionsScreen  onShowLoginModal={handleLoginModalVisibility} />}
 
             <Modal
                 visible={isLoginModalVisible}

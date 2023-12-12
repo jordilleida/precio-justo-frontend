@@ -10,9 +10,20 @@ const useFetch = (url, includeAuth = true) => {
         const fetchData = async () => {
             try {
                 const response = await makeRequest(url, {}, includeAuth);
-                const result = await response.json();
-                setData(result);
+
+                if (response.ok) {
+                    if (response.status === 204) { // 204 No Content
+                        setData([]);
+                    } else {
+                        const result = await response.json();
+                        setData(result);
+                    }
+                } else {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+
                 setLoading(false);
+                
             } catch (error) {
                 setError(error);
                 setLoading(false);

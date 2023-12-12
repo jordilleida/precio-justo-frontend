@@ -1,8 +1,16 @@
 const ApiConstants = {
     BASE_URL: 'http://localhost:8080/',
-    LOGIN_ENDPOINT: 'user/login',
-    REGISTER_ENDPOINT: 'user/register', 
-    USERS_LIST_ENDPOINT: 'user/users',
+
+    USER_URL: 'user/',
+    PROPERTY_URL: 'property/',
+    AUCTION_URL: 'auction/',
+
+    LOGIN_ENDPOINT: 'login',
+    REGISTER_ENDPOINT: 'register', 
+    USERS_LIST_ENDPOINT: 'users',
+    ACTIVE_ENDPOINT: 'active',
+    AUCTION_ENDPOINT: 'auction',
+    BID_ENDPOINT: 'bid',
 };
 
 export default ApiConstants;

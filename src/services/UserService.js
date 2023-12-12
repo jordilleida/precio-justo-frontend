@@ -2,7 +2,7 @@ import ApiConstants from '../constants/ApiConstants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const login = async (email, password) => {
-    const response = await fetch(ApiConstants.BASE_URL + ApiConstants.LOGIN_ENDPOINT, {
+    const response = await fetch(ApiConstants.BASE_URL + ApiConstants.USER_URL + ApiConstants.LOGIN_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mail: email, password }),
@@ -27,7 +27,7 @@ export const login = async (email, password) => {
 };
 
 export const registerUser = async (name, surname, email, password) => {
-    const response = await fetch(ApiConstants.BASE_URL + ApiConstants.REGISTER_ENDPOINT, {
+    const response = await fetch(ApiConstants.BASE_URL + ApiConstants.USER_URL + ApiConstants.REGISTER_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, surname, mail: email, password }),

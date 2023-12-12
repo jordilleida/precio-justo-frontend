@@ -15,7 +15,7 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
                     <Text style={globalStyles.greenText}>JUSTO</Text>
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item1')}>
+            <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('ActiveAuctions')}>
                 <Text>Subastas Activas</Text>
             </TouchableOpacity>
             {hasRole('BUYER') || hasRole('SELLER') ? (
@@ -36,9 +36,13 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
                     </TouchableOpacity>
                     </>
             ) : null}
-            <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item4')}>
-                <Text><Icon name="plus" size={12} /> Agregar Inmueble</Text>
-            </TouchableOpacity>
+
+            {hasRole('BUYER') || hasRole('SELLER') ? (
+                   <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item4')}>
+                   <Text><Icon name="plus" size={12} /> Agregar Inmueble</Text>
+                     </TouchableOpacity>
+            ) : null}
+       
      
         </View>
     );

@@ -5,7 +5,7 @@ import ApiConstants from '../constants/ApiConstants';
 import { globalStyles } from '../styles/styles';
 
 const UserListScreen = () => {
-    const { data: users, loading, error } = useFetch(ApiConstants.BASE_URL + ApiConstants.USERS_LIST_ENDPOINT);
+    const { data: users, loading, error } = useFetch(ApiConstants.BASE_URL + ApiConstants.USER_URL + ApiConstants.USERS_LIST_ENDPOINT);
 
     if (loading) {
         return <ActivityIndicator size="large" color="#0000ff" />;

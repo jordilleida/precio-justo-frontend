@@ -15,7 +15,15 @@ const usePost = (url, includeAuth = true) => {
                 body: JSON.stringify(data),
             };
             const result = await makeRequest(url, requestOptions, includeAuth);
-            const json = await result.json();
+            
+            // Verifica si la respuesta es JSON o no
+            const contentType = result.headers.get("content-type");
+            let json;
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                json = await result.json();
+            } else {
+                json = await result.text();
+            }
             setResponse(json);
         } catch (err) {
             setError(err);
