@@ -11,6 +11,9 @@ const ApiConstants = {
     ACTIVE_ENDPOINT: 'active',
     AUCTION_ENDPOINT: 'auction',
     BID_ENDPOINT: 'bid',
+    PROPERTIES_ENDPOINT: 'properties',
+    CREATE_ENDPOINT: 'create',
+    DELETE_ENDPOINT: 'delete',
 };
 
 export default ApiConstants;

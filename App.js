@@ -9,6 +9,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import UserListScreen from './src/screens/UserListScreen';
 import ActiveAuctionsScreen from './src/screens/auctions/ActiveAuctionsScreen';
+import ActivePropertiesScreen from './src/screens/properties/ActivePropertiesScreen';
 
 const App = () => {
     const [isLoginModalVisible, setLoginModalVisible] = useState(false);
@@ -26,7 +27,9 @@ const App = () => {
             case 'ActiveAuctions':
                 setCurrentScreen('ActiveAuctions');
                 break;
-
+            case 'ActiveProperties':
+                setCurrentScreen('ActiveProperties');
+                break;
         }
     };
 
@@ -47,14 +50,17 @@ const App = () => {
                     onMenuItemSelect={handleMenuItemSelect} 
                     onPrecioJustoPress={handlePrecioJustoPress} 
                 />
-                <Header onLoginPress={() => setLoginModalVisible(true)} />
+                <Header 
+                    onLoginPress={() => setLoginModalVisible(true)} 
+                    onPrecioJustoPress={handlePrecioJustoPress} 
+                />
             </View>
 
             {currentScreen === 'Home' && <HomeScreen />}
             {currentScreen === 'Register' && <RegisterScreen />}
             {currentScreen === 'UserList' && <UserListScreen />}
             {currentScreen === 'ActiveAuctions' && <ActiveAuctionsScreen  onShowLoginModal={handleLoginModalVisibility} />}
-
+            {currentScreen === 'ActiveProperties' && <ActivePropertiesScreen />}
             <Modal
                 visible={isLoginModalVisible}
                 onRequestClose={() => setLoginModalVisible(false)}

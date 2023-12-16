@@ -14,9 +14,11 @@ export const login = async (email, password) => {
 
         // Extrae los datos del usuario del accessToken
         const payload = JSON.parse(atob(accessToken.split('.')[1]));
+
         const userData = {
             roles: payload.roles ? payload.roles.split(',') : [],
-            name: payload.name
+            name: payload.name,
+            id: payload.userId
         };
 
         return { success: true, ...userData };

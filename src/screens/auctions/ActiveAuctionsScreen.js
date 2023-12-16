@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, Image as RNImage, Platform } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Image as RNImage, Platform } from 'react-native';
 import ApiConstants from '../../constants/ApiConstants';
 import { getTokenAccess } from '../../utils/Helpers';
 import BidModal from '../../components/BidModal';
-
 import { globalStyles } from '../../styles/styles';
 
 const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
@@ -13,8 +12,23 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Flag para recargar datos
     const [shouldReload, setShouldReload] = useState(false);
+
+    const calculateTimeLeft = (endDate) => {
+        const difference = +new Date(endDate) - +new Date();
+        let timeLeft = {};
+
+        if (difference > 0) {
+            timeLeft = {
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / 1000 / 60) % 60),
+                seconds: Math.floor((difference / 1000) % 60)
+            };
+        }
+
+        return timeLeft;
+    };
 
     const loadData = async () => {
         setIsLoading(true);
@@ -26,15 +40,22 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
             
             const auctionsResponse = await fetch(ApiConstants.BASE_URL + ApiConstants.AUCTION_URL + ApiConstants.ACTIVE_ENDPOINT);
             const auctionsData = await auctionsResponse.json();
-
+      
             // Combinar y actualizar los datos
             const activeProperties = propertiesData.filter(property => auctionsData.some(auction => auction.propertyId === property.id));
             const updatedProperties = activeProperties.map(property => {
                 const auction = auctionsData.find(auc => auc.propertyId === property.id);
                 const currentBid = auction?.winningBidId ? auction.bids.find(bid => bid.id === auction.winningBidId).amount : null;
-                return { ...property, currentPrice: currentBid, initialPrice : auction.initialPrice, auctionId : auction.id };
+                return { 
+                    ...property, 
+                    currentPrice: currentBid, 
+                    initialPrice: auction.initialPrice, 
+                    auctionId: auction.id,
+                    endDate: auction.endDate,
+                    timeLeft: calculateTimeLeft(auction.endDate)
+                };
             });
-
+                
             setCombinedData(updatedProperties);
         } catch (error) {
             setError(error);
@@ -47,6 +68,17 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
         loadData();
     }, [shouldReload]);
 
+     // Actualizo el tiempo restante cada segundo
+     useEffect(() => {
+        const timer = setInterval(() => {
+            setCombinedData(data => data.map(item => ({
+                ...item,
+                timeLeft: calculateTimeLeft(item.endDate)
+            })));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
         
     const handleBidPress = async (auctionId) => {
         const accessToken = await getTokenAccess();
@@ -90,16 +122,16 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
                     horizontal
                     renderItem={({ item }) => {
                         if (Platform.OS === 'web') {
-                            return <img src={item.imageUrl} style={styles.propertyImage} alt="Property" />;
+                            return <img src={item.imageUrl} style={globalStyles.propertyImage} alt="Property" />;
                         } else {
-                            return <RNImage source={{ uri: item.imageUrl }} style={styles.propertyImage} />;
+                            return <RNImage source={{ uri: item.imageUrl }} style={globalStyles.propertyImage} />;
                         }
                     }}
                     keyExtractor={(item, index) => index.toString()}
                 />
             );
         } else {
-            return <Text style={styles.noImageText}>Sin Foto</Text>;
+            return <Text style={globalStyles.noImageText}>Sin Foto</Text>;
         }
     };
 
@@ -118,27 +150,32 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
                 data={combinedData}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.propertyCard}>
+                    <View style={globalStyles.propertyCard}>
                         {renderImages(item.images)}
-                        <View style={styles.propertyContent}>
-                            <Text style={styles.propertyTitle}>{item.type} en {item.postalCode.city.name}</Text>
-                            <View style={styles.priceRow}>
-                                <Text style={styles.initialPrice}>Precio inicial: {item.initialPrice}€</Text>
+                        <View style={globalStyles.propertyContent}>
+                            <Text style={globalStyles.propertyTitle}>{item.type} en {item.postalCode.city.name}</Text>
+                            <View style={globalStyles.priceRow}>
+                                <Text style={globalStyles.initialPrice}>Precio inicial: {item.initialPrice}€</Text>
                                 {item.currentPrice > item.initialPrice && (
-                                    <Text style={styles.currentPrice}>Puja más alta: {item.currentPrice}€</Text>
+                                    <Text style={globalStyles.currentPrice}>Puja más alta: {item.currentPrice}€</Text>
+                                )}
+                                {item.timeLeft && (
+                                    <Text style={{ color: 'blue' }}>
+                                        Tiempo restante: {`${item.timeLeft.days}d ${item.timeLeft.hours}h ${item.timeLeft.minutes}m ${item.timeLeft.seconds}s`}
+                                    </Text>
                                 )}
                             </View>
 
-                            <View style={styles.propertyDetails}>
+                            <View style={globalStyles.propertyDetails}>
                                 <Text>{item.rooms} hab. | {item.surface} m²</Text>
                            
                             </View>
-                            <Text style={styles.propertyDescription}>{item.description}</Text>
-                            <View style={styles.propertyToolbar}>
+                            <Text style={globalStyles.propertyDescription}>{item.description}</Text>
+                            <View style={globalStyles.propertyToolbar}>
                                    <TouchableOpacity
-                                        style={styles.bidButton}
+                                        style={globalStyles.bidButton}
                                         onPress={() => handleBidPress(item.auctionId)}>
-                                        <Text style={styles.contactButtonText}>Pujar</Text>
+                                        <Text style={globalStyles.contactButtonText}>Pujar</Text>
                                     </TouchableOpacity>                         
                             </View>
                         </View>
@@ -158,76 +195,5 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
     );
 };
 
-const styles = StyleSheet.create({
-    propertyCard: {
-        margin: 10,
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        overflow: 'hidden',
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-    },
-    priceRow:{ 
-        marginTop:15,
-    },
-    propertyInfo: {
-        padding: 10,
-    },
-    propertyTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    propertyDetails: {
-        fontSize: 14,
-        color: '#666',
-        marginVertical: 5,
-    },
-    propertyAddress: {
-        fontSize: 14,
-        color: '#000',
-    },
-    contactButton: {
-        backgroundColor: '#007bff',
-        padding: 10,
-        marginTop: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    bidButton: {
-        backgroundColor: '#006633',
-        padding: 10,
-        marginTop: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    contactButtonText: {
-        color: '#fff',
-        fontSize: 14,
-        fontWeight: 'bold',
-    },
-    propertyImage: {
-        width: '100%',
-        height: 150,
-        resizeMode: 'cover',
-    },
-    noImageText: {
-        padding: 10,
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-    },
-    initialPrice: {
-        fontSize: 14,
-        color: '#666',
-    },
-    currentPrice: {
-        fontSize: 14,
-        color: 'green',
-        fontWeight: 'bold',
-    },
-});
 
 export default ActiveAuctionsScreen;

@@ -4,11 +4,12 @@ import { Button } from 'react-native-elements';
 import { useAuth } from '../context/AuthContext';
 import { globalStyles } from '../styles/styles';
 
-const Header = ({ onLoginPress }) => {
+const Header = ({ onLoginPress, onPrecioJustoPress }) => {
     const { isAuthenticated, user, logout } = useAuth();
 
     const handleLogout = () => {
         logout();
+        onPrecioJustoPress();
     };
 
     return (

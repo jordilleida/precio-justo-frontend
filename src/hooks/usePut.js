@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { makeRequest } from '../services/networkService';
+import { makeRequest } from '../utils/networkServices';
 
 const usePut = (url) => {
     const [response, setResponse] = useState(null);

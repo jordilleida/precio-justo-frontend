@@ -103,4 +103,97 @@ export const globalStyles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
+    propertyCard: {
+      margin: 10,
+      backgroundColor: '#fff',
+      borderRadius: 5,
+      overflow: 'hidden',
+      elevation: 2,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 5,
+  },
+  priceRow:{ 
+      marginTop:15,
+  },
+  propertyInfo: {
+      padding: 10,
+  },
+  propertyDetails: {
+      fontSize: 14,
+      color: '#666',
+      marginVertical: 5,
+  },
+  propertyAddress: {
+      fontSize: 14,
+      color: '#000',
+  },
+  propertyItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    marginBottom: 10,
+},
+propertyTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+},
+imageContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+},
+propertyImage: {
+    width: 100,
+    height: 100,
+    marginRight: 10,
+},
+  contactButton: {
+      backgroundColor: '#007bff',
+      padding: 10,
+      marginTop: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+  },
+  bidButton: {
+      backgroundColor: '#006633',
+      padding: 10,
+      marginTop: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+  },
+  deleteButton: {
+    backgroundColor: '#cc0000',
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+},
+  contactButtonText: {
+      color: '#fff',
+      fontSize: 14,
+      fontWeight: 'bold',
+  },
+  propertyImage: {
+      width: '100%',
+      height: 150,
+      resizeMode: 'cover',
+  },
+  noImageText: {
+      padding: 10,
+      fontSize: 16,
+      color: '#666',
+      textAlign: 'center',
+  },
+  initialPrice: {
+      fontSize: 14,
+      color: '#666',
+  },
+  currentPrice: {
+      fontSize: 14,
+      color: 'green',
+      fontWeight: 'bold',
+  },
+  
 });

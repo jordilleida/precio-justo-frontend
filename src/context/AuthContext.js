@@ -8,7 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [authState, setAuthState] = useState({
         isAuthenticated: false,
-        user: null, // Aquí puedes almacenar información del usuario como roles, nombre, etc.
+        user: null,
     });
 
     const loginAuth = (userData) => {

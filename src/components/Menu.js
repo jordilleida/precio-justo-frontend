@@ -5,8 +5,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
     const { user, isAuthenticated } = useAuth();
+   
+     const hasRole = (role) => {
+        if (!isAuthenticated || !user?.roles) return false;
     
-    const hasRole = (role) => isAuthenticated && user?.roles?.includes(role);
+        const trimmedRole = role.trim();
+        return user.roles.some(userRole => userRole.trim() === trimmedRole);
+    };
+
     return (
         <View style={globalStyles.menu}>
             <TouchableOpacity style={globalStyles.menuItem} onPress={onPrecioJustoPress}>
@@ -22,6 +28,14 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
                 <>
                     <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item2')}>
                         <Text>Mis mensajes</Text>
+                    </TouchableOpacity>
+                    </>
+            ) : null}
+            
+            {hasRole('SELLER') ? (
+                <>
+                    <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('ActiveProperties')}>
+                        <Text>Mis inmuebles</Text>
                     </TouchableOpacity>
                     </>
             ) : null}

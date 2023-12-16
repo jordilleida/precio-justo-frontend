@@ -21,7 +21,7 @@ const LoginModal = ({ isVisible, onClose, onRegisterPress }) => {
                 setIsLoading(false);
 
                 if (result.success) {
-                    loginAuth({ roles: result.roles, name: result.name });
+                    loginAuth({ roles: result.roles, name: result.name, id: result.id });
                     onClose();
                 } else {
                     setError(result.errorMessage || 'Error en el inicio de sesión');
