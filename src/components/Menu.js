@@ -52,7 +52,7 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
             ) : null}
 
             {hasRole('BUYER') || hasRole('SELLER') ? (
-                   <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item4')}>
+                   <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('CreateProperty')}>
                    <Text><Icon name="plus" size={12} /> Agregar Inmueble</Text>
                      </TouchableOpacity>
             ) : null}

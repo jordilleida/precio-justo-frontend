@@ -4,6 +4,7 @@ import ApiConstants from '../../constants/ApiConstants';
 import { useAuth } from '../../context/AuthContext';
 import { globalStyles } from '../../styles/styles';
 import { makeRequest } from '../../utils/networkServices';
+import NewAuctionModal from '../../components/NewAuctionModal';
 
 const ActivePropertiesScreen = () => {
     const { user } = useAuth();
@@ -11,6 +12,8 @@ const ActivePropertiesScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [shouldReload, setShouldReload] = useState(false);
+    const [isNewAuctionModalVisible, setIsNewAuctionModalVisible] = useState(false);
+    const [selectedPropertyId, setSelectedPropertyId] = useState(null);
 
     const fetchProperties = async () => {
         try {
@@ -43,19 +46,25 @@ const ActivePropertiesScreen = () => {
             if (!deleteResponse.ok) {
                 throw new Error('Error al eliminar la propiedad');
             }
-            setShouldReload(prev => !prev); // Recargar propiedades
+            setShouldReload(prev => !prev);
+
         } catch (err) {
             setError(err);
         }
     };
 
     const handleAuctionPress = (propertyId) => {
-        console.log("Iniciar subasta para la propiedad:", propertyId);
-        // Aquí tengo que poner la lógica para iniciar subasta
+        setSelectedPropertyId(propertyId);
+        setIsNewAuctionModalVisible(true);
     };
 
     const handleDeletePress = (propertyId) => {
         deleteProperty(propertyId);
+    };
+
+    const onAuctionSuccess = () => {
+        setIsNewAuctionModalVisible(false);
+        setShouldReload(prev => !prev);
     };
 
     if (loading) {
@@ -85,15 +94,27 @@ const ActivePropertiesScreen = () => {
                             ))}
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-                            <TouchableOpacity style={globalStyles.bidButton} onPress={() => handleAuctionPress(item.id)}>
-                                <Text style={globalStyles.contactButtonText}>Subastar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={globalStyles.deleteButton} onPress={() => handleDeletePress(item.id)}>
-                                <Text style={globalStyles.contactButtonText}>Eliminar</Text>
-                            </TouchableOpacity>
+                            {item.status !== ApiConstants.SOLD && (
+                                <>
+                                    {item.status !== ApiConstants.PENDING_VALIDATION && (
+                                        <TouchableOpacity style={globalStyles.bidButton} onPress={() => handleAuctionPress(item.id)}>
+                                            <Text style={globalStyles.contactButtonText}>Subastar</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                    <TouchableOpacity style={globalStyles.deleteButton} onPress={() => handleDeletePress(item.id)}>
+                                        <Text style={globalStyles.contactButtonText}>Eliminar</Text>
+                                    </TouchableOpacity>
+                                </>
+                            )}
                         </View>
                     </View>
                 )}
+            />
+            <NewAuctionModal
+                isVisible={isNewAuctionModalVisible}
+                onClose={() => setIsNewAuctionModalVisible(false)}
+                propertyId={selectedPropertyId}
+                onAuctionSuccess={onAuctionSuccess}
             />
         </View>
     );
