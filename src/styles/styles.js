@@ -143,11 +143,13 @@ propertyTitle: {
 imageContainer: {
     flexDirection: 'row',
     marginTop: 10,
+    flexWrap: 'wrap',
 },
 propertyImage: {
     width: 100,
     height: 100,
     marginRight: 10,
+    marginBottom: 10,
 },
   contactButton: {
       backgroundColor: '#007bff',

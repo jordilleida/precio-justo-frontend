@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { makeRequest } from '../utils/networkServices';
 
-const usePut = (url) => {
+const usePut = () => {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const doPut = async (data) => {
+    const doPut = async (url) => {
         setLoading(true);
         try {
             const requestOptions = {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
             };
+
             const result = await makeRequest(url, requestOptions);
             const json = await result.json();
             setResponse(json);

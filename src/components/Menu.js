@@ -45,8 +45,8 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
                     <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('UserList')}>
                         <Text>Usuarios</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item4')}>
-                        <Text>Subastas</Text>
+                    <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('ValidateProperties')}>
+                        <Text>Propiedades nuevas</Text>
                     </TouchableOpacity>
                     </>
             ) : null}

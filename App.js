@@ -11,6 +11,7 @@ import UserListScreen from './src/screens/UserListScreen';
 import ActiveAuctionsScreen from './src/screens/auctions/ActiveAuctionsScreen';
 import ActivePropertiesScreen from './src/screens/properties/ActivePropertiesScreen';
 import CreatePropertyScreen from './src/screens/properties/CreatePropertyScreen';
+import ValidatePropertiesScreen from './src/screens/properties/ValidatePropertiesScreen';
 
 const App = () => {
     const [isLoginModalVisible, setLoginModalVisible] = useState(false);
@@ -33,6 +34,9 @@ const App = () => {
                 break;
             case 'CreateProperty':
                 setCurrentScreen('CreateProperty');
+                break;
+            case 'ValidateProperties':
+                setCurrentScreen('ValidateProperties');
                 break;
         }
     };
@@ -66,6 +70,7 @@ const App = () => {
             {currentScreen === 'ActiveAuctions' && <ActiveAuctionsScreen  onShowLoginModal={handleLoginModalVisibility} />}
             {currentScreen === 'ActiveProperties' && <ActivePropertiesScreen />}
             {currentScreen === 'CreateProperty' && <CreatePropertyScreen />}
+            {currentScreen === 'ValidateProperties' && <ValidatePropertiesScreen />}
             <Modal
                 visible={isLoginModalVisible}
                 onRequestClose={() => setLoginModalVisible(false)}

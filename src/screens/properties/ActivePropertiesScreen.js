@@ -94,7 +94,7 @@ const ActivePropertiesScreen = () => {
                             ))}
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-                            {item.status !== ApiConstants.SOLD && (
+                            {item.status !== ApiConstants.SOLD && item.status !== ApiConstants.IN_AUCTION && (
                                 <>
                                     {item.status !== ApiConstants.PENDING_VALIDATION && (
                                         <TouchableOpacity style={globalStyles.bidButton} onPress={() => handleAuctionPress(item.id)}>

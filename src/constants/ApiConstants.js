@@ -14,9 +14,13 @@ const ApiConstants = {
     PROPERTIES_ENDPOINT: 'properties',
     CREATE_ENDPOINT: 'create',
     DELETE_ENDPOINT: 'delete',
+    VALIDATE_ENDPOINT: 'validate',
+    INVALIDATE_ENDPOINT: 'invalidate',
+    PENDING_VALIDATION_ENDPOINT: 'pending-validation',
 
-    PENDING_VALIDATION: "PENDING_VALIDATION",
-    SOLD: "SOLD"
+    PENDING_VALIDATION: 'PENDING_VALIDATION',
+    SOLD: 'SOLD',
+    IN_AUCTION: 'IN_AUCTION',
 };
 
 export default ApiConstants;
