@@ -80,6 +80,7 @@ const ValidatePropertiesScreen = () => {
             )}
             <FlatList
                 data={properties}
+                horizontal
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={globalStyles.propertyItem}>

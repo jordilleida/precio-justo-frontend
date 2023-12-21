@@ -1,14 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ScrollView, View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { ScrollView, View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, Platform } from 'react-native';
+import SelectDropdown from 'react-native-select-dropdown';
+import { Button } from 'react-native-elements';
+//import { launchImageLibrary } from 'react-native-image-picker';
 import { globalStyles } from '../../styles/styles';
 import ApiConstants from '../../constants/ApiConstants';
 import debounce from 'lodash.debounce';
 import usePost from '../../hooks/usePost';
+import { storage } from '../../utils/firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 
 
 const CreatePropertyScreen = () => {
     const [addressSearch, setAddressSearch] = useState('');
     const [suggestions, setSuggestions] = useState([]);
+    const [images, setImages] = useState([]);
+    const [registryDocument, setRegistryDocument] = useState(null);
     const [property, setProperty] = useState({
         type: '',
         description: '',
@@ -24,13 +32,17 @@ const CreatePropertyScreen = () => {
         region: '',
         country: ''
     });
+    const propertyTypes = ["VIVIENDA", "PARKING", "LOCAL", "TERRENO", "TRASTERO"];
+
     const [hasSelectedSuggestion, setHasSelectedSuggestion] = useState(false);
     const { doPost, response, error, loading } = usePost(`${ApiConstants.BASE_URL}${ApiConstants.PROPERTY_URL}${ApiConstants.CREATE_ENDPOINT}`);
+
 
    const fetchSuggestions = useCallback(debounce(async (query) => {
         try {
             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=es`);
             const data = await response.json();
+            console.log(data);
             setSuggestions(data);
         } catch (error) {
             console.error('Error fetching suggestions:', error);
@@ -82,6 +94,95 @@ const CreatePropertyScreen = () => {
             setHasSelectedSuggestion(false);
         }
     };
+    const selectImage = () => {
+        if (Platform.OS === 'web') {
+            selectImageWeb();
+        } else {
+           /* 
+            const options = {
+                 
+                };
+        
+            launchImageLibrary(options, (response) => {
+                if (response.didCancel) {
+                    console.log('User cancelled image picker');
+                } else if (response.error) {
+                    console.log('ImagePicker Error: ', response.error);
+                } else {
+                    const source = { uri: response.uri };
+                    setImages([...images, source]);
+                    uploadImage(response.uri);
+                }
+            });
+          */
+        }
+    };
+
+    const selectImageWeb = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.multiple = true;
+        input.onchange = (e) => {
+            const files = e.target.files;
+            Array.from(files).forEach(file => {
+                uploadImage(file);
+            });
+        };
+        input.click();
+    };
+    
+    const uploadImage = async (file) => {
+        try {
+  
+            const fileExtension = file.name.split('.').pop();
+    
+            const timestamp = Date.now();
+            const fileName = `properties/${timestamp}.${fileExtension}`;
+    
+            const storage = getStorage();
+            const imageRef = ref(storage, fileName);
+    
+            await uploadBytes(imageRef, file);
+            const downloadURL = await getDownloadURL(imageRef);
+            setImages(prevImages => [...prevImages, { uri: downloadURL }]);
+        } catch (error) {
+            console.error('Error uploading image: ', error);
+        }
+    };
+
+      const selectRegistryDocument = () => {
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            uploadRegistryDocument(file);
+        };
+
+        input.click();
+    };
+    
+    const uploadRegistryDocument = async (file) => {
+        try {
+
+            const fileExtension = file.name.split('.').pop();
+            const timestamp = Date.now();
+
+            const storage = getStorage();
+            const docRef = ref(storage, `registryDocuments/${timestamp}.${fileExtension}`);
+
+            await uploadBytes(docRef, file);
+            const downloadURL = await getDownloadURL(docRef);
+
+            setRegistryDocument(downloadURL);
+
+        } catch (error) {
+
+            console.error('Error uploading document: ', error);
+        }
+    };
 
     const handleSubmit = async () => {
  
@@ -99,7 +200,8 @@ const CreatePropertyScreen = () => {
             city: property.city,
             region: property.region,
             country: property.country,
-            registryDocumentUrl: "prueba.jpg"
+            imageUrls: images.map(img => img.uri),
+            registryDocumentUrl: registryDocument
         };
     
         await doPost(propertyData);
@@ -149,11 +251,20 @@ const CreatePropertyScreen = () => {
 
         {/* Fila para Tipo de propiedad, Número de habitaciones, Número de baños, y Superficie */}
         <View style={styles.inputRow}>
-            <TextInput
-                style={[globalStyles.input, styles.quarterWidthInput]}
-                placeholder="Tipo de propiedad"
-                value={property.type}
-                onChangeText={(text) => handleInputChange('type', text)}
+            <SelectDropdown
+                data={propertyTypes}
+                onSelect={(selectedItem, index) => {
+                    setProperty({ ...property, type: selectedItem })
+                }}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                    return selectedItem
+                }}
+                rowTextForSelection={(item, index) => {
+                    return item
+                }}
+                buttonStyle={[globalStyles.input, styles.quarterWidthInput]}
+                defaultButtonText="Tipo de vivienda"
+                buttonTextStyle={{ fontSize: 14 }}
             />
             <TextInput
                 style={[globalStyles.input, styles.quarterWidthInput]}
@@ -226,7 +337,31 @@ const CreatePropertyScreen = () => {
                 onChangeText={(text) => handleInputChange('country', text)}
             />
         </View>
-        <Button title={loading ? 'Procesando...' : 'Enviar propiedad'} onPress={handleSubmit} disabled={loading} />
+        <Button 
+            title="Seleccionar Imagen" onPress={selectImage} 
+            buttonStyle={styles.buttonMargin}
+        />
+
+     
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.imageScrollView}>
+            {images.map((img, index) => (
+                <Image key={index} source={{ uri: img.uri }} style={[{ width: 100, height: 100 }, styles.imageMargin]} />
+            ))}
+        </ScrollView>
+
+        <Button 
+            title="Seleccionar documento registral" onPress={selectRegistryDocument}
+            buttonStyle={styles.buttonMargin}
+         />
+        {registryDocument && (
+            <Image source={{ uri: registryDocument }} style={[{ width: 100, height: 100 }, styles.imageMargin]} />
+        )}
+        <Button
+                title={loading ? 'Procesando...' : 'Enviar propiedad'}
+                onPress={handleSubmit}
+                disabled={loading}
+                buttonStyle={globalStyles.bidButton}
+            />
             {response && <Text style={globalStyles.greenText}>{response}</Text>}
             {error && <Text style={globalStyles.errorText}>{error.message}</Text>}
        
@@ -257,7 +392,20 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 5,
     },
- 
+    imageMargin: {
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    buttonMargin: {
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    imageMargin: {
+        margin: 10,
+    },
+    imageScrollView: {
+        flexDirection: 'row',
+    },
 
 });
 

@@ -80,6 +80,7 @@ const ActivePropertiesScreen = () => {
             <Text style={globalStyles.text}>Propiedades del usuario</Text>
             <FlatList
                 data={properties}
+                horizontal={true}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={globalStyles.propertyItem}>
