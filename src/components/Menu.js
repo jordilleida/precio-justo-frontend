@@ -24,9 +24,16 @@ const Menu = ({ onMenuItemSelect, onPrecioJustoPress }) => {
             <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('ActiveAuctions')}>
                 <Text>Subastas Activas</Text>
             </TouchableOpacity>
+            {hasRole('BUYER') ? (
+                <>
+                    <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('EndedAuctions')}>
+                        <Text>Subastas Finalizadas</Text>
+                    </TouchableOpacity>
+                    </>
+            ) : null}
             {hasRole('BUYER') || hasRole('SELLER') ? (
                 <>
-                    <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('item2')}>
+                    <TouchableOpacity style={globalStyles.menuItem} onPress={() => onMenuItemSelect('ChatMessages')}>
                         <Text>Mis mensajes</Text>
                     </TouchableOpacity>
                     </>

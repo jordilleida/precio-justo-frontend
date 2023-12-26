@@ -9,9 +9,11 @@ import HomeScreen from './src/screens/HomeScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import UserListScreen from './src/screens/UserListScreen';
 import ActiveAuctionsScreen from './src/screens/auctions/ActiveAuctionsScreen';
+import EndedAuctionsScreen from './src/screens/auctions/EndedAuctionsScreen';
 import ActivePropertiesScreen from './src/screens/properties/ActivePropertiesScreen';
 import CreatePropertyScreen from './src/screens/properties/CreatePropertyScreen';
 import ValidatePropertiesScreen from './src/screens/properties/ValidatePropertiesScreen';
+import ChatMessagesScreen from './src/screens/communications/ChatMessagesScreen';
 
 const App = () => {
     const [isLoginModalVisible, setLoginModalVisible] = useState(false);
@@ -29,6 +31,9 @@ const App = () => {
             case 'ActiveAuctions':
                 setCurrentScreen('ActiveAuctions');
                 break;
+            case 'EndedAuctions':
+                setCurrentScreen('EndedAuctions');
+                break;    
             case 'ActiveProperties':
                 setCurrentScreen('ActiveProperties');
                 break;
@@ -37,6 +42,9 @@ const App = () => {
                 break;
             case 'ValidateProperties':
                 setCurrentScreen('ValidateProperties');
+                break;
+            case 'ChatMessages':
+                setCurrentScreen('ChatMessages');
                 break;
         }
     };
@@ -68,9 +76,11 @@ const App = () => {
             {currentScreen === 'Register' && <RegisterScreen />}
             {currentScreen === 'UserList' && <UserListScreen />}
             {currentScreen === 'ActiveAuctions' && <ActiveAuctionsScreen  onShowLoginModal={handleLoginModalVisibility} />}
+            {currentScreen === 'EndedAuctions' && <EndedAuctionsScreen />}
             {currentScreen === 'ActiveProperties' && <ActivePropertiesScreen />}
             {currentScreen === 'CreateProperty' && <CreatePropertyScreen />}
             {currentScreen === 'ValidateProperties' && <ValidatePropertiesScreen />}
+            {currentScreen === 'ChatMessages' && <ChatMessagesScreen />}
             <Modal
                 visible={isLoginModalVisible}
                 onRequestClose={() => setLoginModalVisible(false)}
