@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Image as RNImage, Platform } from 'react-native';
 import ApiConstants from '../../constants/ApiConstants';
 import { getTokenAccess } from '../../utils/Helpers';
+import { useAuth } from '../../context/AuthContext';
 import BidModal from '../../components/BidModal';
+import NewContactModal from '../../components/NewContactModal';
 import { globalStyles } from '../../styles/styles';
 
 const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
     const [combinedData, setCombinedData] = useState([]);
     const [isBidModalVisible, setBidModalVisible] = useState(false);
     const [selectedAuctionId, setSelectedAuctionId] = useState(null);
+    const [isContactModalVisible, setIsContactModalVisible] = useState(false);
+    const [selectedOwnerId, setSelectedOwnerId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    const { user } = useAuth();
+    
     const [shouldReload, setShouldReload] = useState(false);
 
     const calculateTimeLeft = (endDate) => {
@@ -57,6 +62,7 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
             // Combinar y actualizar los datos
             const activeProperties = propertiesData.filter(property => auctionsData.some(auction => auction.propertyId === property.id));
             const updatedProperties = activeProperties.map(property => {
+
                 const auction = auctionsData.find(auc => auc.propertyId === property.id);
                 const currentBid = auction?.winningBidId ? auction.bids.find(bid => bid.id === auction.winningBidId).amount : null;
                 return { 
@@ -107,6 +113,11 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
 
     const reloadAuctions = () => {
         setShouldReload(prev => !prev);
+    };
+    
+    const handleContactPress = (ownerId) => {
+        setSelectedOwnerId(ownerId);
+        setIsContactModalVisible(true);
     };
 
     // Mostrar un indicador de carga si está cargando
@@ -190,12 +201,14 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
                                         style={globalStyles.bidButton}
                                         onPress={() => handleBidPress(item.auctionId)}>
                                         <Text style={globalStyles.contactButtonText}>Pujar</Text>
-                                    </TouchableOpacity>    
+                                    </TouchableOpacity>  
+                                {user && item.userId !== user.id && (
                                     <TouchableOpacity
                                         style={globalStyles.contactButton}
-                                        onPress={() => handleContactPress(item.ownerId)}>
+                                        onPress={() => handleContactPress(item.userId)}>
                                         <Text style={globalStyles.contactButtonText}>Contactar</Text>
-                                    </TouchableOpacity>                     
+                                    </TouchableOpacity>
+                                )}                   
                             </View>
                         </View>
                     </View>
@@ -203,12 +216,22 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
             />
 
               {/* Modal de puja */}
-              <BidModal
+                <BidModal
                     isVisible={isBidModalVisible}
                     auctionId={selectedAuctionId}
                     onClose={() => setBidModalVisible(false)}
                     onBidSuccess={reloadAuctions}
                 />
+            {/* Modal de contacto */}
+            {user && (
+                <NewContactModal
+                    isVisible={isContactModalVisible}
+                    ownerId={selectedOwnerId}
+                    userId={user.id}
+                    onClose={() => setIsContactModalVisible(false)}
+               />
+            )}
+               
 
         </View>
     );
