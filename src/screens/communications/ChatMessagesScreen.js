@@ -29,14 +29,19 @@ const ChatMessagesScreen = () => {
     const fetchMessageReplies = useCallback(async (messageId) => {
         try {
             const response = await makeRequest(ApiConstants.BASE_URL + ApiConstants.COMMUNICATION_URL + ApiConstants.MESSAGES_REPLIES_ENDPOINT + '/' + messageId);
+            if (!response.ok || response.status === 204) {
+                setMessageReplies([]);
+                return;
+            }
             const data = await response.json();
+
             setMessageReplies(data);
         } catch (error) {
             console.error('Error al cargar respuestas:', error);
         }
     }, []);
 
-    const handleSelectMessage = (message) => {
+    const handleSelectMessage = (message) => {     
         setSelectedMessage(message);
     };
     

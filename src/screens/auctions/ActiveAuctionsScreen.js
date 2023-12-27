@@ -36,11 +36,24 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
 
         try {
             const propertiesResponse = await fetch(ApiConstants.BASE_URL + ApiConstants.PROPERTY_URL + ApiConstants.AUCTION_ENDPOINT);
-            const propertiesData = await propertiesResponse.json();
             
+            if (!propertiesResponse.ok || propertiesResponse.status === 204) {
+                setCombinedData([]);
+                setIsLoading(false);
+                return;
+            }
+            
+            const propertiesData = await propertiesResponse.json();
+   
             const auctionsResponse = await fetch(ApiConstants.BASE_URL + ApiConstants.AUCTION_URL + ApiConstants.ACTIVE_ENDPOINT);
+
+            if (!auctionsResponse.ok || auctionsResponse.status === 204) {
+                setCombinedData([]);
+                setIsLoading(false);
+                return;
+            }
             const auctionsData = await auctionsResponse.json();
-      
+         
             // Combinar y actualizar los datos
             const activeProperties = propertiesData.filter(property => auctionsData.some(auction => auction.propertyId === property.id));
             const updatedProperties = activeProperties.map(property => {
@@ -58,6 +71,7 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
                 
             setCombinedData(updatedProperties);
         } catch (error) {
+            console.log(error);
             setError(error);
         } finally {
             setIsLoading(false);
@@ -176,7 +190,12 @@ const ActiveAuctionsScreen = ({ onShowLoginModal }) => {
                                         style={globalStyles.bidButton}
                                         onPress={() => handleBidPress(item.auctionId)}>
                                         <Text style={globalStyles.contactButtonText}>Pujar</Text>
-                                    </TouchableOpacity>                         
+                                    </TouchableOpacity>    
+                                    <TouchableOpacity
+                                        style={globalStyles.contactButton}
+                                        onPress={() => handleContactPress(item.ownerId)}>
+                                        <Text style={globalStyles.contactButtonText}>Contactar</Text>
+                                    </TouchableOpacity>                     
                             </View>
                         </View>
                     </View>

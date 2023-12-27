@@ -15,6 +15,13 @@ const EndedAuctionsScreen = () => {
 
         try {
             const response = await makeRequest(ApiConstants.BASE_URL + ApiConstants.AUCTION_URL + ApiConstants.ENDED_ENDPOINT);
+
+            if (!response.ok || response.status === 204) {
+                setAuctionsWithProperty([]);
+                setIsLoading(false);
+                return;
+            }
+
             const endedAuctions = await response.json();
 
             const propertiesResponses = await Promise.all(endedAuctions.map(auction => 
